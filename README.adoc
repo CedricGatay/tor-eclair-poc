@@ -1,0 +1,53 @@
+# Basic TOR wrapping sample
+
+Sample project allowing to bootstrap TOR proxy for use in with eclair.
+
+Use https://github.com/thaliproject/Tor_Onion_Proxy_Library[Tor_Onion_Proxy_Library] to wrap TOR launch and bootstrap eclair.
+
+Hardcoded port to 10462 and set it into `eclair` base configuration.
+
+[WARNING]
+====
+Caveats:
+
+ * TOR proxy listens on the machine "system-wide". There are no restriction on who can connect to it whatsoever
+ * This includes tor binary for main distribution
+ * Library is in early stage (but is "only" a wrapper around `ProcessInvoke`)
+====
+
+
+## Steps to use locally
+
+### Install library locally
+
+One need to clone https://github.com/thaliproject/Tor_Onion_Proxy_Library[Tor_Onion_Proxy_Library] and install it locally
+with `mvn install` to warm up its local maven repository.
+
+### Run bitcoind
+
+Create a `bitcoin.conf` file like the following:
+
+```
+server=1
+rpcuser=foo
+rpcpassword=bar
+txindex=1
+zmqpubrawblock=tcp://127.0.0.1:29000
+zmqpubrawtx=tcp://127.0.0.1:29000
+[test]
+# Use the test chain and enable rpc
+testnet=1
+rpcbind=127.0.0.1
+rpcport=8332
+```
+
+Don't forget to run a `bitcoind` daemon locally : `bitcoind -testnet`
+
+### Run this code
+
+Then a `./gradlew run` should suffice and run the content of `App.java` (which does not that much apart bootstrapping TOR / Eclair and switching to an Eclair node exposed over TORv3).
+
+
+### Troubleshoot
+
+If there are errors during launch, don't hesitate to enable TOR logs by editing `TestSettings` class.
